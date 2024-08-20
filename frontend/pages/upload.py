@@ -1,7 +1,8 @@
 import base64
-import re
+import requests
+from dash import html, dcc, Input, Output, State, no_update
 
-from dash import html, dcc, Input, Output, no_update
+API_URL = "http://localhost:5000/api"
 
 
 def upload_page():
@@ -27,9 +28,10 @@ def register_callbacks_upload(app):
     @app.callback(
         Output("upload-notifications-container", "children"),
         Input("upload-file", "contents"),
+        State('upload-file', 'filename'),
         prevent_init_call=True,
     )
-    def upload_log(contents):
+    def upload_log(contents, filename):
         if contents:
             # content是一个以 "data:text/plain;base64," 开头的字符串
             content_type, content_string = contents.split(',')
@@ -39,34 +41,21 @@ def register_callbacks_upload(app):
             decoded = base64.b64decode(content_string).decode('utf-8')
             # print(type(decoded))    # >> <class 'str'>
 
-            analyze_string_data(decoded)
+            # 将文件内容通过POST请求发送到服务器
+            try:
+                response = requests.post(
+                    API_URL + '/upload_log',
+                    files={'file': (filename, decoded)}
+                )
+                if response.status_code == 200:
+                    return "Log uploaded successfully."
+                else:
+                    return f"Failed to upload log: {response.text}"
+            except Exception as e:
+                return f"An error occurred: {str(e)}"
+        return no_update
 
-            return no_update
-        else:
-            return no_update
 
 
-def analyze_string_data(data):
-    rec_pattern = re.compile(r'Receive.*? --> (\d+) <-- ({.*})')
-    send_pattern = re.compile(r'Send.*? --> (\d+) <-- ({.*})')
-
-    # 将解码后的内容按行分割
-    lines = data.splitlines()
-
-    for idx, line in enumerate(lines[:30], start=1):
-        if line.strip() != "":
-            match = rec_pattern.search(line)
-            if match:
-                timestamp = match.group(1)
-                json_str = match.group(2)
-                print(idx, "Receive", timestamp, json_str)
-                continue
-            match = send_pattern.search(line)
-            if match:
-                timestamp = match.group(1)
-                json_str = match.group(2)
-                print(idx, "Send", timestamp, json_str)
-                continue
-            print(idx, "no match", line)
 
 

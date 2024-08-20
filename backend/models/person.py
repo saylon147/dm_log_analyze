@@ -8,8 +8,8 @@ class Person(me.Document):
 
 
 class Author(Person):
-    is_author = True
+    is_author = me.BooleanField(default=True)
 
 
 class Player(Person):
-    is_author = False
+    is_author = me.BooleanField(default=False)

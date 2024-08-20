@@ -32,7 +32,7 @@ class MsgReceivePayload(me.Document):
 
 
 class Msg11001Payload(MsgReceivePayload):
-    author = Author()
+    author = me.ReferenceField(Author)
 
 
 # L: Likes  C: Comment  G:Gift  F:FansClub
@@ -40,7 +40,7 @@ class MsgLCGFPayload(me.Document):
     author_id = me.StringField(required=True)
     type = me.StringField(required=True)
     msg_id = me.StringField(required=True)
-    player = Player()
+    player = me.ReferenceField(Player)
     timestamp = me.LongField(required=True)
 
 
