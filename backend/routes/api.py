@@ -4,6 +4,9 @@ from flask import Blueprint, request, jsonify
 
 api = Blueprint('api', __name__)
 
+rec_pattern = re.compile(r'Receive.*? --> (\d+) <-- ({.*})')
+send_pattern = re.compile(r'Send.*? --> (\d+) <-- ({.*})')
+
 
 @api.route('/upload_log', methods=['POST'])
 def upload_log():
@@ -17,18 +20,11 @@ def upload_log():
 
     if file:
         contents = file.read().decode('utf-8')
-        lines = contents.splitlines()
-
-        print(len(lines))
-        print(lines[0])
-
+        analyze_string_data(contents)
         return jsonify({"message": "Log uploaded and processed"}), 200
 
 
 def analyze_string_data(data):
-    rec_pattern = re.compile(r'Receive.*? --> (\d+) <-- ({.*})')
-    send_pattern = re.compile(r'Send.*? --> (\d+) <-- ({.*})')
-
     # 将解码后的内容按行分割
     lines = data.splitlines()
 

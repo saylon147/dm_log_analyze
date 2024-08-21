@@ -2,6 +2,7 @@ import mongoengine as me
 from person import Author, Player
 
 
+# Send 消息主要记录主播发送 START_BATTLE = 12020 和 END_BATTLE = 12021
 class MsgSend(me.Document):
     id = me.IntField(required=True)
     game = me.StringField(required=True)
@@ -10,21 +11,19 @@ class MsgSend(me.Document):
     timestamp = me.LongField(required=True)
     sign = me.StringField(required=True)
     version = me.StringField(required=True)
-
-
-class MsgSendConn(MsgSend):
-    mac = me.StringField(required=True)
-
-
-class MsgSendData(MsgSend):
     payload = me.StringField(required=True)
+    # 客户端的时间戳
+    real_timestamp = me.LongField(required=True)
 
 
+# Receive 消息主要记录 START_CONNECT = 11001（获取主播信息） ；直播间互动（点赞 评论 礼物 粉丝俱乐部）
 class MsgReceive(me.Document):
     result = me.IntField(required=True)
     cmdtype = me.IntField(required=True)
     errormsg = me.StringField(required=True)
     payload = me.GenericReferenceField()
+    # 客户端的时间戳
+    real_timestamp = me.LongField(required=True)
 
 
 class MsgReceivePayload(me.Document):
