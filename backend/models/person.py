@@ -2,7 +2,7 @@ import mongoengine as me
 
 
 class Person(me.Document):
-    id = me.StringField(required=True, unique=True)
+    userid = me.StringField(required=True, unique=True)
     name = me.StringField(required=True)
     head_url = me.StringField(required=True)
     meta = {

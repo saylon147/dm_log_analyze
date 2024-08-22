@@ -5,7 +5,7 @@ from backend.models.person import Author, Player
 # Send 消息主要记录主播发送 START_BATTLE = 12020 和 END_BATTLE = 12021
 class MsgSend(me.Document):
     hash = me.StringField(required=True, unique=True)
-    id = me.IntField(required=True)
+    msg_id = me.IntField(required=True)
     game = me.StringField(required=True)
     platform = me.IntField(required=True)
     roomcode = me.StringField(required=True)
@@ -21,17 +21,17 @@ class MsgReceive(me.Document):
     result = me.IntField(required=True)
     cmdtype = me.IntField(required=True)
     errormsg = me.StringField(required=True)
-    payload = me.GenericReferenceField()
+    payload = me.GenericEmbeddedDocumentField()
     # 客户端的时间戳
     real_timestamp = me.LongField(required=True)
 
 
-class Msg11001Payload(me.Document):
+class Msg11001Payload(me.EmbeddedDocument):
     author = me.ReferenceField(Author)
 
 
 # L: Likes  C: Comment  G:Gift  F:FansClub
-class MsgLCGFPayload(me.Document):
+class MsgLCGFPayload(me.EmbeddedDocument):
     author_id = me.StringField(required=True)
     type = me.StringField(required=True)
     msg_id = me.StringField(required=True)

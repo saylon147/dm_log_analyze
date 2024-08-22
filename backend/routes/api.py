@@ -35,27 +35,28 @@ def generate_hash_for_log(log_line):
 
 
 def get_author(author_id):
-    return Author.objects(id=author_id).first()
+    return Author.objects(userid=author_id).first()
 
 
 def get_player(player_id):
-    return Player.objects(id=player_id).first()
+    return Player.objects(userid=player_id).first()
 
 
 def msg_rec_existed(log_hash):
-    return MsgReceive.objects(log_hash=log_hash).first()
+    return MsgReceive.objects(hash=log_hash).first()
 
 
 def msg_send_existed(log_hash):
-    return MsgSend.objects(log_hash=log_hash).first()
+    return MsgSend.objects(hash=log_hash).first()
 
 
 def analyze_string_data(data):
     # 将解码后的内容按行分割
     lines = data.splitlines()
 
-    for idx, line in enumerate(lines[:600], start=1):
+    for idx, line in enumerate(lines[:], start=1):
         if line.strip() != "":
+            # print(f'processing line: {idx}')
             match = rec_pattern.search(line)
             if match:
                 timestamp = match.group(1)
@@ -76,7 +77,7 @@ def analyze_string_data(data):
                                 author_name = payload.get("authorInfo", {}).get("authorName", "")
                                 head_url = payload.get("authorInfo", {}).get("authorAvatar", "")
                                 author = Author(
-                                    id=author_id, name=author_name, head_url=head_url
+                                    userid=author_id, name=author_name, head_url=head_url
                                 )
                                 author.save()
                             msg_receive = MsgReceive(
@@ -104,9 +105,9 @@ def analyze_string_data(data):
                             player = get_player(player_id)
                             if not player:
                                 player = Player(
-                                    id=player_id,
+                                    userid=player_id,
                                     name=item.get("userNick", ""),
-                                    userAvatar=item.get("userId", ""),
+                                    head_url=item.get("userAvatar", ""),
                                 )
                                 player.save()
                             ts = item.get("timestamp", 0)
@@ -196,7 +197,7 @@ def analyze_string_data(data):
                     if not msg_send_existed(log_hash):
                         msg_send = MsgSend(
                             hash=log_hash,
-                            id=msg_id,
+                            msg_id=msg_id,
                             game=json_data.get("game", ""),
                             platform=json_data.get("platform", 0),
                             roomcode=json_data.get("roomCode", ""),
