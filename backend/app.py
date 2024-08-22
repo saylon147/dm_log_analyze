@@ -1,6 +1,6 @@
 from flask import Flask
 import mongoengine as me
-from routes.api import api
+from backend.routes.api import api
 
 MONGO_URI = 'mongodb://localhost:27017/dm_logs'
 
