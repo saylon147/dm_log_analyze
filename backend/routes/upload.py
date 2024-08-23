@@ -2,13 +2,12 @@ import hashlib
 import json
 import re
 
-from flask import Blueprint, request, jsonify
+from flask import request, jsonify
 
 from backend.models.msg import MsgSend, MsgReceive, Msg11001Payload, MsgCommentPayload, MsgLikesPayload, \
     MsgFansClubPayload, MsgGiftPayload
 from backend.models.person import Author, Player
-
-api = Blueprint('api', __name__)
+from backend.app import api
 
 rec_pattern = re.compile(r'Receive.*? --> (\d+) <-- ({.*})')
 send_pattern = re.compile(r'Send.*? --> (\d+) <-- ({.*})')
