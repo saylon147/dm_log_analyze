@@ -2,7 +2,7 @@ import base64
 import requests
 from dash import html, dcc, Input, Output, State, no_update
 
-API_URL = "http://localhost:5000/api"
+API_URL = "http://localhost:5000/upload"
 
 
 def upload_page():
@@ -44,7 +44,7 @@ def register_callbacks_upload(app):
             # 将文件内容通过POST请求发送到服务器
             try:
                 response = requests.post(
-                    API_URL + '/upload_log',
+                    API_URL + '/logs',
                     files={'file': (filename, decoded)}
                 )
                 if response.status_code == 200:

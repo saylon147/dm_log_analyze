@@ -5,7 +5,7 @@ from dash import html, Output, Input, no_update, clientside_callback
 import dash_mantine_components as dmc
 
 
-API_URL = "http://localhost:5000/api"
+API_URL = "http://localhost:5000/query"
 
 
 def get_cell(url, name, userid):

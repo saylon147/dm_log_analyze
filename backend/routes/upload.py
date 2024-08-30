@@ -2,18 +2,19 @@ import hashlib
 import json
 import re
 
-from flask import request, jsonify
+from flask import request, jsonify, Blueprint
 
 from backend.models.msg import MsgSend, MsgReceive, Msg11001Payload, MsgCommentPayload, MsgLikesPayload, \
     MsgFansClubPayload, MsgGiftPayload
 from backend.models.person import Author, Player
-from backend.app import api
+
+upload = Blueprint('upload', __name__)
 
 rec_pattern = re.compile(r'Receive.*? --> (\d+) <-- ({.*})')
 send_pattern = re.compile(r'Send.*? --> (\d+) <-- ({.*})')
 
 
-@api.route('/upload_log', methods=['POST'])
+@upload.route('/logs', methods=['POST'])
 def upload_log():
     if 'file' not in request.files:
         return jsonify({"error": "No file part"}), 400
